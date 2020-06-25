@@ -1,0 +1,7 @@
+<IfModule mod_rewitre.c>
+    RewriteEngine On
+    RewirteCond %{REQUEST_FILENAME}% !-f
+    RewirteCond %{REQUEST_FILENAME}% !-d
+
+    RewirteRule . index.php
+</IfModule>
