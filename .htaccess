@@ -1,4 +1,4 @@
-<IfModule mod_rewitre.c>
+<IfModule mod_rewrite.c>
     RewriteEngine On
     RewirteCond %{REQUEST_FILENAME}% !-f
     RewirteCond %{REQUEST_FILENAME}% !-d
