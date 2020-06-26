@@ -16,7 +16,7 @@ class Builder
         return $this->build_create_sql();
     }
 
-    public function string($name, $len = 10, $defalut='') {
+    public function field_string($name, $len = 10, $defalut='') {
         $field = [];
         $field['type'] = 'VARCHAR';
         $field['name'] = $name;
