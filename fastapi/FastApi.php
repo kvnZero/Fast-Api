@@ -24,10 +24,12 @@ class FastApi
 
     private function route()
     {
+        if(!isset($_SERVER['PATH_INFO'])) return; //index页
+
         $model = ltrim($_SERVER['PATH_INFO'], '/');
         $arr = explode('/',$model);
 
-        $file = APP_PATH . "model/{$arr[0]}.php";
+        $file = APP_PATH . "app/model/{$arr[0]}.php";
         
         if(!file_exists($file)) $this->output(-1, 'model not found');
         
@@ -52,6 +54,10 @@ class FastApi
     }
 
     private function print() {
+        if(!isset($_SERVER['PATH_INFO'])) {
+            require APP_PATH . "app/static/index.php";
+            exit;
+        }
         echo $this->result;
     }
 
