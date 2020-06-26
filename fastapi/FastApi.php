@@ -55,7 +55,7 @@ class FastApi
 
     private function print() {
         if(!isset($_SERVER['PATH_INFO'])) {
-            require APP_PATH . "app/static/index.php";
+            require APP_PATH . "app/static". $_SERVER['SCRIPT_NAME'];
             exit;
         }
         echo $this->result;
