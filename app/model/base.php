@@ -1,5 +1,9 @@
 <?php
-class Base
+namespace app\model;
+
+use Fastapi\Db\Connection\PDOConnection;
+
+abstract class Base
 {
     public int   $code   = 1000;
     public array $data   = [];
@@ -9,7 +13,12 @@ class Base
 
     public function result($param) {
         if($this->method == 'GET'){
-            $this->data[] = $param;
+            $pdo = new PDOConnection();
+            $pdo = $pdo->table(strtolower(get_class($this)));
+            foreach ($param as $key => $value) {
+                $pdo = $pdo->where($key,$value);
+            }
+            $this->data[] = $pdo->query();
         }
     }
 
