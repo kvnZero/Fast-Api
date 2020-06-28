@@ -37,7 +37,7 @@ class Builder
                     break;
             }
 
-            $sql = "`{$val['name']}` {$type},";
+            $sql .= "`{$val['name']}` {$type},";
         }
         return trim("
         CREATE TABLE IF NOT EXISTS `{$this->table}`(
