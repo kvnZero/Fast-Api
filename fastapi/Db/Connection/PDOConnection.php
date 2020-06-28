@@ -60,11 +60,11 @@ class PDOConnection
                 $where_sql = ''; 
                 if(!empty($this->sql['where'])) {
                     $where_sql = join(' AND ', $this->sql['where']);  
-                    $where_sql = "WHERE $where_sql";
+                    $where_sql = "WHERE $where_sql ";
                 }
 
                 $sql = trim("
-                SELECT {$column} {$where_sql}FROM {$this->table}
+                SELECT {$column} FROM {$this->table} {$where_sql}
                 ");
                 break;
             default:
