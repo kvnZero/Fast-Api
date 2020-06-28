@@ -41,6 +41,7 @@ class Builder
         }
         return trim("
         CREATE TABLE IF NOT EXISTS `{$this->table}`(
+            `id` INT UNSIGNED AUTO_INCREMENT,
             {$sql}
             PRIMARY KEY ( `id` )
          )ENGINE=InnoDB DEFAULT CHARSET=utf8;
