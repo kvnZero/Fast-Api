@@ -17,7 +17,13 @@ class PDOConnection
 
     public function __construct() {
         $dsn = 'mysql:dbname='.MYSQL_db.';host='.MYSQL_HOST;
-        if(self::$db == NULL) self::$db = new PDO($dsn, MYSQL_USER, MYSQL_PASSWORD);
+        if(self::$db == NULL) {
+            try {
+                self::$db = new PDO($dsn, MYSQL_USER, MYSQL_PASSWORD);
+            } catch (\Throwable $th) {
+                die ('数据库连接失败');
+            }
+        }
     }
 
     public function table($name) {
@@ -26,7 +32,11 @@ class PDOConnection
     }
 
     public function query() {
-        return self::$db->query($this->build('select'))->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            return self::$db->query($this->build('select'))->fetchAll(PDO::FETCH_ASSOC);
+        } catch (\Throwable $th) {
+            die ('查询语句执行失败');
+        }
     }
 
     public function field($column) {
