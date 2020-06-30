@@ -43,4 +43,14 @@
     localhost:8000/user?id=1
 >>>
 
+如果插入数据到User表, 访问地址和POST数据(可被input接收默认是$_REQUEST,可重写)：
+>>>
+    localhost:8000/user
+    user=admin&password=password
+>>>
 
+如果更新User表数据, 访问地址和POST数据(目前必须带id, 后续可配置)：
+>>>
+    localhost:8000/user
+    id=1&password=newpassword
+>>>

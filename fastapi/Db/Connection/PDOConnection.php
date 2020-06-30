@@ -44,8 +44,13 @@ class PDOConnection
         return $this;
     }
 
-    public function insert($sql) {
-        return self::$db->exec($this->sql);
+    public function insert($value) {
+        if(isset($value['id'])){
+            $sql = $this->build('update', $value);
+        }else{
+            $sql = $this->build('insert', $value);
+        }
+        return self::$db->exec($sql)==1 ? $value : false;
     }
 
     public function where($key, $val, $option = '=') {
@@ -57,7 +62,7 @@ class PDOConnection
         return self::$db;
     }
 
-    private function build($type) {
+    private function build($type, $datas = []) {
         if(empty($this->table)) return 'null table';
 
         switch ($type) {
@@ -77,6 +82,36 @@ class PDOConnection
                 SELECT {$column} FROM {$this->table} {$where_sql}
                 ");
                 break;
+            case 'insert':  
+                
+                if(!isset($datas[0])){
+                    //如果不是嵌套数据 代表是单行插入
+                    $datas = [$datas];
+                }
+                $sql = '';
+                foreach ($datas as $data) {
+                    $k = [];
+                    $v = [];
+                    array_walk($data, function($value, $key) use(&$k, &$v){
+                        $k[] = "`$key`";
+                        $v[] = "'$value'";
+                    });
+                    $sql .= "INSERT INTO {$this->table} (".join(',',$k).") VALUES (".join(',',$v).");";
+                }
+                break;
+                
+            case 'update':
+
+                $v = [];
+                $update_id = $datas['id'];
+                unset($datas['id']);
+
+                array_walk($datas, function($value, $key) use(&$v){
+                    $v[] = "`$key` = '$value'";
+                });
+                $sql = "UPDATE {$this->table} SET ".join(' AND ', $v)." WHERE id=$update_id";
+                break;
+
             default:
                 # code...
                 break;

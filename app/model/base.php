@@ -12,13 +12,15 @@ abstract class Base
     private $method = '';
 
     public function result($param) {
+        $pdo = new PDOConnection();
+        $pdo = $pdo->table(strtolower(get_class($this)));
         if($this->method == 'GET'){
-            $pdo = new PDOConnection();
-            $pdo = $pdo->table(strtolower(get_class($this)));
             foreach ($param as $key => $value) {
                 $pdo = $pdo->where($key,$value);
             }
             $this->data[] = $pdo->query();
+        }else if($this->method =='POST') {
+            $this->data[] = $pdo->insert($param);
         }
     }
 
