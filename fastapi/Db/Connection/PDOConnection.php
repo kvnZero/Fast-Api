@@ -45,11 +45,13 @@ class PDOConnection
     }
 
     public function insert($value) {
-        if(isset($value['id'])){
-            $sql = $this->build('update', $value);
-        }else{
-            $sql = $this->build('insert', $value);
-        }
+        $sql = $this->build('insert', $value);
+        return self::$db->exec($sql)==1 ? $value : false;
+    }
+
+    public function update($value, $where = []) {
+        $value['_where'] = $where;
+        $sql = $this->build('update', $value);
         return self::$db->exec($sql)==1 ? $value : false;
     }
 
@@ -98,18 +100,25 @@ class PDOConnection
                     });
                     $sql .= "INSERT INTO {$this->table} (".join(',',$k).") VALUES (".join(',',$v).");";
                 }
+    
                 break;
                 
             case 'update':
 
                 $v = [];
-                $update_id = $datas['id'];
-                unset($datas['id']);
+                $w = [];
+                $update_key = $datas['_where'];
+                unset($datas['_where']);
 
-                array_walk($datas, function($value, $key) use(&$v){
-                    $v[] = "`$key` = '$value'";
+                array_walk($datas, function($value, $key) use(&$v, &$w, $update_key){
+                    if(in_array($key,$update_key)){
+                        $w[] = "$key = $value";
+                   
+                    }else{
+                        $v[] = "`$key` = '$value'";
+                    }
                 });
-                $sql = "UPDATE {$this->table} SET ".join(' AND ', $v)." WHERE id=$update_id";
+                $sql = "UPDATE {$this->table} SET ".join(' AND ', $v)." WHERE ".join(' AND ', $w);
                 break;
 
             default:

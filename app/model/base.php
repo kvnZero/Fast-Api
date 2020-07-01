@@ -8,6 +8,7 @@ abstract class Base
     public int   $code   = 1000;
     public array $data   = [];
     public array $sup_method = ['GET', 'POST'];
+    public array $update_key = ['id'];
 
     private $method = '';
 
@@ -20,7 +21,11 @@ abstract class Base
             }
             $this->data[] = $pdo->query();
         }else if($this->method =='POST') {
-            $this->data[] = $pdo->insert($param);
+            if($this->update_key != array_intersect($this->update_key, array_keys($param))){
+                $this->data[] = $pdo->insert($param);
+            }else{
+                $this->data[] = $pdo->update($param, $this->update_key);
+            }
         }
     }
 

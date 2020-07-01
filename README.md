@@ -49,7 +49,7 @@
     user=admin&password=password
 >>>
 
-如果更新User表数据, 访问地址和POST数据(目前必须带id, 后续可配置)：
+如果更新User表数据, 访问地址和POST数据(默认id为更新查询, 可根据update_key配置，注意同时也是where条件)：
 >>>
     localhost:8000/user
     id=1&password=newpassword
