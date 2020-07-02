@@ -55,8 +55,12 @@ class PDOConnection
         return self::$db->exec($sql)==1 ? $value : false;
     }
 
-    public function where($key, $val, $option = '=') {
-        $this->sql['where'][] = "`$key` $option \"$val\"";
+    public function where($key, $val, $option = '=', $type = 'AND') {
+        $type = " $type ";
+        if(empty($this->sql['where'])){
+            $type = '';
+        }
+        $this->sql['where'][] = "$type`$key` $option \"$val\"";
         return $this;
     }
 
@@ -76,13 +80,14 @@ class PDOConnection
 
                 $where_sql = ''; 
                 if(!empty($this->sql['where'])) {
-                    $where_sql = join(' AND ', $this->sql['where']);  
+                    $where_sql = join('', $this->sql['where']);  
                     $where_sql = "WHERE $where_sql ";
                 }
 
                 $sql = trim("
                 SELECT {$column} FROM {$this->table} {$where_sql}
                 ");
+                var_dump($sql);
                 break;
             case 'insert':  
                 

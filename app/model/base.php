@@ -16,8 +16,28 @@ abstract class Base
         $pdo = new PDOConnection();
         $pdo = $pdo->table(strtolower(get_class($this)));
         if($this->method == 'GET'){
+            $whereKey = [];
             foreach ($param as $key => $value) {
-                $pdo = $pdo->where($key,$value);
+                preg_match("/^(<>)|^(<=)|^(>=)|^[=<>]/",$value, $option);
+                if(empty($option[0])) {
+                    $option = ['='];
+                }else{
+                    $value = substr($value,strlen($option[0]));
+                }  
+                
+                preg_match("/^(or_)|^(and_)?/",$key, $type);
+                if(empty($type[0])) $key = 'and_'.$key ; //默认
+                switch ($type[0]) {
+                    case 'or_':
+                        $key = substr($key, 3); 
+                        $pdo = $pdo->where($key,$value, $option[0], 'OR');
+                        break;
+                    default:
+                    case 'and_':
+                        $key = substr($key, 4); 
+                        $pdo = $pdo->where($key,$value, $option[0], 'AND');
+                        break;
+                }
             }
             $this->data[] = $pdo->query();
         }else if($this->method =='POST') {
