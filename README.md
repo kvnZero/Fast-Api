@@ -54,3 +54,21 @@
     localhost:8000/user
     id=1&password=newpassword
 >>>
+
+<hr>
+<h2>目前支持的的查询结构：</h2>
+
+如果需要某个key或运算则：
+>>>
+    localhost:8000/user?id=2&or_id=2
+>>>
+
+如果需要取出小于2或大于5的数据则：
+>>>
+    localhost:8000/user?id=<2&or_id=>5
+>>>
+其他目前已支持的写法 ：
+>>>
+    localhost:8000/user?id=2&and_id=>5
+    localhost:8000/user?id=<>2
+>>>
