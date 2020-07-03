@@ -25,9 +25,14 @@ abstract class Base
                     $value = substr($value,strlen($option[0]));
                 }  
                 
-                preg_match("/^(or_)|^(and_)?/",$key, $type);
+                preg_match("/^(or_)|^(order_)|^(and_)?/",$key, $type);
                 if(empty($type[0])) $key = 'and_'.$key ; //默认
                 switch ($type[0]) {
+                    case 'order_':
+                        $key = substr($key, 6);
+                        $value = (($value == '0' || $value == '1') ? ['ASC', 'DESC'][$value] : $value) ?? 'ASC';
+                        $pdo = $pdo->order($key, $value);
+                        break; 
                     case 'or_':
                         $key = substr($key, 3); 
                         $pdo = $pdo->where($key,$value, $option[0], 'OR');

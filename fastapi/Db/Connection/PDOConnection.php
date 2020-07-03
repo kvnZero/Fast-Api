@@ -10,6 +10,7 @@ class PDOConnection
     private $table;
 
     private $sql = [
+        'order' => ['key'=>'id', 'type'=>'ASC'],
         'where' => []
     ];
 
@@ -32,7 +33,7 @@ class PDOConnection
     }
 
     public function query() {
-        try {
+        try {          
             return self::$db->query($this->build('select'))->fetchAll(PDO::FETCH_ASSOC);
         } catch (\Throwable $th) {
             die ('查询语句执行失败');
@@ -64,6 +65,11 @@ class PDOConnection
         return $this;
     }
 
+    public function order($key = 'id', $type = 'ASC'){
+        $this->sql['order'] = compact('key', 'type');
+        return $this;
+    }
+
     public function getObject(){
         return self::$db;
     }
@@ -83,11 +89,12 @@ class PDOConnection
                     $where_sql = join('', $this->sql['where']);  
                     $where_sql = "WHERE $where_sql ";
                 }
+                
+                $order_sql = "ORDER BY {$this->sql['order']['key']} {$this->sql['order']['type']}";
 
                 $sql = trim("
-                SELECT {$column} FROM {$this->table} {$where_sql}
+                SELECT {$column} FROM {$this->table} {$where_sql}{$order_sql}
                 ");
-                var_dump($sql);
                 break;
             case 'insert':  
                 
