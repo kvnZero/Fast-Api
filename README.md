@@ -33,6 +33,11 @@
     }
 ```
 
+如果访问app/static下的php文件, 访问地址：
+>>>
+    localhost:8000/base.php
+>>>
+
 如果查询User数据, 访问地址：
 >>>
     localhost:8000/user
@@ -67,8 +72,17 @@
 >>>
     localhost:8000/user?id=<2&or_id=>5
 >>>
+
 其他目前已支持的写法 ：
 >>>
     localhost:8000/user?id=2&and_id=>5
     localhost:8000/user?id=<>2
+>>>
+
+根据某个值进行排序(0,1分别代表ASC,DESC, 也可以直接输入ASC或DESC)
+>>>
+    localhost:8000/user?id=2&or_id=2&order_id=0
+    localhost:8000/user?id=2&or_id=2&order_user_id=1
+    localhost:8000/user?id=2&or_id=2&order_id=ASC
+    localhost:8000/user?id=2&or_id=2&order_user_id=DESC
 >>>
