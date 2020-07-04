@@ -1,0 +1,34 @@
+<?php 
+
+define('APP_PATH', __DIR__ . '/');
+
+require(APP_PATH . 'fastapi/FastApi.php');
+
+$config = require(APP_PATH . 'config/config.php');
+
+spl_autoload_register(function ($class_name) {
+    require_once str_replace('\\','/',$class_name) . '.php';
+});
+
+switch ($argv[1]) {
+    case 'run':
+        $port = $argv[2] ?? 8000;
+        print "启用服务:http://localhost:{$port}\n";
+        echo `php -S localhost:$port route.php`;
+        break;
+    case 'create':
+        if(verify_config()) { print "请先配置config.php的数据库信息\n"; exit;}
+        if(!isset($argv[2])) { print "请指定文件\n"; exit;}
+        if(!file_exists("Schema/{$argv[2]}.php")) {print "文件不存在\n"; exit;}
+        include "Schema/{$argv[2]}.php";
+        if(!function_exists('create_table')) {print "加载失败, 请检查create_table方法是否存在\n"; exit;}
+        if(create_table() !== false){
+            print("写入成功\n");
+        }else{
+            print("写入失败\n");
+        }
+        break;
+    default:
+        # code...
+        break;
+}
