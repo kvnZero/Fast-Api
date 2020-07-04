@@ -17,7 +17,7 @@ class PDOConnection
     private $column = ['*'];
 
     public function __construct() {
-        $dsn = 'mysql:dbname='.MYSQL_db.';host='.MYSQL_HOST;
+        $dsn = 'mysql:dbname='.MYSQL_DB.';host='.MYSQL_HOST;
         if(self::$db == NULL) {
             try {
                 self::$db = new PDO($dsn, MYSQL_USER, MYSQL_PASSWORD);
@@ -95,6 +95,8 @@ class PDOConnection
                 $sql = trim("
                 SELECT {$column} FROM {$this->table} {$where_sql}{$order_sql}
                 ");
+                var_dump($sql);
+
                 break;
             case 'insert':  
                 
