@@ -18,29 +18,31 @@ abstract class Base
         if($this->method == 'GET'){
             $whereKey = [];
             foreach ($param as $key => $value) {
-                preg_match("/^(<>)|^(<=)|^(>=)|^[=<>]/",$value, $option);
-                if(empty($option[0])) {
-                    $option = ['='];
+                preg_match("/^(<>|<=|>=|<|>)(.+)/",$value, $option);
+                if(count($option)==3){
+                    $value = $option[2];
+                    $option = $option[1];
                 }else{
-                    $value = substr($value,strlen($option[0]));
-                }  
-                
-                preg_match("/^(or_)|^(order_)|^(and_)?/",$key, $type);
-                if(empty($type[0])) $key = 'and_'.$key ; //默认
-                switch ($type[0]) {
-                    case 'order_':
-                        $key = substr($key, 6);
+                    $option = '=';
+                } 
+
+                preg_match("/^(or|order|and)_(.+)/",$key, $type);
+                if(count($type)==3){
+                    $key = $type[2];
+                }else{
+                    $type[1] = 'and'; //默认
+                } 
+                switch ($type[1]) {
+                    case 'order':
                         $value = (($value == '0' || $value == '1') ? ['ASC', 'DESC'][$value] : $value) ?? 'ASC';
                         $pdo = $pdo->order($key, $value);
                         break; 
-                    case 'or_':
-                        $key = substr($key, 3); 
-                        $pdo = $pdo->where($key,$value, $option[0], 'OR');
+                    case 'or':
+                        $pdo = $pdo->where($key,$value, $option, 'OR');
                         break;
                     default:
-                    case 'and_':
-                        $key = substr($key, 4); 
-                        $pdo = $pdo->where($key,$value, $option[0], 'AND');
+                    case 'and':
+                        $pdo = $pdo->where($key,$value, $option, 'AND');
                         break;
                 }
             }
